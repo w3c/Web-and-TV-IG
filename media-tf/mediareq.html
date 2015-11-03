@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" typeof="bibo:Document w3p:NOTE" about="" property="dcterms:language" content="en">
+<head>
+    <title>Requirements from the Media API TF</title>
+    <meta charset="utf-8">
+    
+    
+  <style>/*****************************************************************
+ * ReSpec 3 CSS
+ * Robin Berjon - http://berjon.com/
+ *****************************************************************/
+
+/* --- INLINES --- */
+em.rfc2119 { 
+    text-transform:     lowercase;
+    font-variant:       small-caps;
+    font-style:         normal;
+    color:              #900;
+}
+
+h1 acronym, h2 acronym, h3 acronym, h4 acronym, h5 acronym, h6 acronym, a acronym,
+h1 abbr, h2 abbr, h3 abbr, h4 abbr, h5 abbr, h6 abbr, a abbr {
+    border: none;
+}
+
+dfn {
+    font-weight:    bold;
+}
+
+a.internalDFN {
+    color:  inherit;
+    border-bottom:  1px solid #99c;
+    text-decoration:    none;
+}
+
+a.externalDFN {
+    color:  inherit;
+    border-bottom:  1px dotted #ccc;
+    text-decoration:    none;
+}
+
+a.bibref {
+    text-decoration:    none;
+}
+
+cite .bibref {
+    font-style: normal;
+}
+
+code {
+    color:  #ff4500;
+}
+
+/* --- TOC --- */
+.toc a, .tof a {
+    text-decoration:    none;
+}
+
+a .secno, a .figno {
+    color:  #000;
+}
+
+ul.tof, ol.tof {
+    list-style: none outside none;
+}
+
+.caption {
+    margin-top: 0.5em;
+    font-style:   italic;
+}
+
+/* --- TABLE --- */
+table.simple {
+    border-spacing: 0;
+    border-collapse:    collapse;
+    border-bottom:  3px solid #005a9c;
+}
+
+.simple th {
+    background: #005a9c;
+    color:  #fff;
+    padding:    3px 5px;
+    text-align: left;
+}
+
+.simple th[scope="row"] {
+    background: inherit;
+    color:  inherit;
+    border-top: 1px solid #ddd;
+}
+
+.simple td {
+    padding:    3px 10px;
+    border-top: 1px solid #ddd;
+}
+
+.simple tr:nth-child(even) {
+    background: #f0f6ff;
+}
+
+/* --- DL --- */
+.section dd > p:first-child {
+    margin-top: 0;
+}
+
+.section dd > p:last-child {
+    margin-bottom: 0;
+}
+
+.section dd {
+    margin-bottom:  1em;
+}
+
+.section dl.attrs dd, .section dl.eldef dd {
+    margin-bottom:  0;
+}
+
+@media print {
+    .removeOnSave {
+        display: none;
+    }
+}
+</style><link rel="stylesheet" href="https://www.w3.org/StyleSheets/TR/W3C-NOTE"><!--[if lt IE 9]><script src='https://www.w3.org/2008/site/js/html5shiv.js'></script><![endif]--></head>
+  <body class="h-entry" style="" role="document" id="respecDocument"><div class="head" role="contentinfo" id="respecHeader">
+  <p>
+    
+      <a href="http://www.w3.org/"><img width="72" height="48" src="https://www.w3.org/Icons/w3c_home" alt="W3C"></a>
+    
+  </p>
+  <h1 class="title p-name" id="title" property="dcterms:title">Requirements from the Media API TF</h1>
+  
+  <h2 property="dcterms:issued" datatype="xsd:dateTime" content="2014-04-01T06:41:13.000Z" id="w3c-working-group-note-01-april-2014"><abbr title="World Wide Web Consortium">W3C</abbr> Working Group Note <time class="dt-published" datetime="2014-04-01">01 April 2014</time></h2>
+  <dl>
+    
+      <dt>This version:</dt>
+      <dd><a class="u-url" href="http://www.w3.org/TR/2014/NOTE-mediareq-20140401/">http://www.w3.org/TR/2014/NOTE-mediareq-20140401/</a></dd>
+      <dt>Latest published version:</dt>
+      <dd><a href="http://www.w3.org/TR/mediareq/">http://www.w3.org/TR/mediareq/</a></dd>
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt>Editors:</dt>
+    <dd class="p-author h-card vcard" rel="bibo:editor" inlist=""><span typeof="foaf:Person"><span property="foaf:name" class="p-name fn">Giuseppe Pascale</span>, <a rel="foaf:workplaceHomepage" class="p-org org h-org h-card" href="http://www.opera.com/">Opera</a></span>
+</dd>
+<dd class="p-author h-card vcard" rel="bibo:editor" inlist=""><span typeof="foaf:Person"><span property="foaf:name" class="p-name fn">Bin Hu</span>, <a rel="foaf:workplaceHomepage" class="p-org org h-org h-card" href="http://www.att.com/">AT&amp;T</a></span>
+</dd>
+
+    
+    
+  </dl>
+  
+  
+  
+  
+    
+      <p class="copyright">
+        <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> ©
+        2014
+        
+        <a href="http://www.w3.org/"><abbr title="World Wide Web Consortium">W3C</abbr></a><sup>®</sup>
+        (<a href="http://www.csail.mit.edu/"><abbr title="Massachusetts Institute of Technology">MIT</abbr></a>,
+        <a href="http://www.ercim.eu/"><abbr title="European Research Consortium for Informatics and Mathematics">ERCIM</abbr></a>,
+        <a href="http://www.keio.ac.jp/">Keio</a>, <a href="http://ev.buaa.edu.cn/">Beihang</a>), 
+        
+        All Rights Reserved.
+        
+        <abbr title="World Wide Web Consortium">W3C</abbr> <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>,
+        <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and
+        
+          <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a>
+        
+        rules apply.
+      </p>
+    
+  
+  <hr>
+</div>
+    <section id="abstract" class="introductory" property="dcterms:abstract" datatype="" typeof="bibo:Chapter" resource="#ref" rel="bibo:Chapter"><h2 aria-level="1" role="heading" id="h2_abstract">Abstract</h2>
+      <p>
+        This document lists the use cases, implied requirements and identified gaps that the Media API TF of the Web and TV IG has considered during its first iteration of work (March 2013 - February 2014)
+      </p>
+    </section><section id="sotd" class="introductory" typeof="bibo:Chapter" resource="#ref" rel="bibo:Chapter"><h2 aria-level="1" role="heading" id="h2_sotd">Status of This Document</h2>
+  
+    
+      
+        <p>
+          <em>This section describes the status of this document at the time of its publication.
+          Other documents may supersede this document. A list of current <abbr title="World Wide Web Consortium">W3C</abbr> publications and the
+          latest revision of this technical report can be found in the <a href="http://www.w3.org/TR/"><abbr title="World Wide Web Consortium">W3C</abbr> technical reports index</a> at
+          http://www.w3.org/TR/.</em>
+        </p>
+        
+      <p>
+  
+      </p>
+    
+        <p>
+          This document was published by the <a href="http://www.w3.org/2011/webtv/">Web and TV Interest Group</a> as a Working Group Note.
+          
+          
+            If you wish to make comments regarding this document, please send them to 
+            <a href="mailto:public-web-and-tv@w3.org">public-web-and-tv@w3.org</a> 
+            (<a href="mailto:public-web-and-tv-request@w3.org?subject=subscribe">subscribe</a>,
+            <a href="http://lists.w3.org/Archives/Public/public-web-and-tv/">archives</a>).
+          
+          
+          
+          
+            All comments are welcome.
+          
+        </p>
+        
+        
+          <p>
+            Publication as a Working Group Note does not imply endorsement by the <abbr title="World Wide Web Consortium">W3C</abbr>
+            Membership. This is a draft document and may be updated, replaced or obsoleted by other
+            documents at any time. It is inappropriate to cite this document as other than work in
+            progress.
+          </p>
+        
+        
+        
+        <p>
+          
+            This document was produced by a group operating under the 
+            <a id="sotd_patent" about="" rel="w3p:patentRules" href="http://www.w3.org/Consortium/Patent-Policy-20040205/">5 February 2004 <abbr title="World Wide Web Consortium">W3C</abbr> Patent
+            Policy</a>.
+          
+          
+          
+            
+              <abbr title="World Wide Web Consortium">W3C</abbr> maintains a <a href="http://www.w3.org/2004/01/pp-impl/424242/status" rel="disclosure">public list of any patent
+              disclosures</a> 
+            
+            made in connection with the deliverables of the group; that page also includes
+            instructions for disclosing a patent. An individual who has actual knowledge of a patent
+            which the individual believes contains
+            <a href="http://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential">Essential
+            Claim(s)</a> must disclose the information in accordance with
+            <a href="http://www.w3.org/Consortium/Patent-Policy-20040205/#sec-Disclosure">section
+            6 of the <abbr title="World Wide Web Consortium">W3C</abbr> Patent Policy</a>.
+          
+          
+        </p>
+        
+      
+    
+  
+</section><section id="toc"><h2 class="introductory" aria-level="1" role="heading" id="h2_toc">Table of Contents</h2><ul class="toc" role="directory" id="respecContents"><li class="tocline"><a href="#introduction" class="tocxref"><span class="secno">1. </span>Introduction</a></li><li class="tocline"><a href="#conformance" class="tocxref"><span class="secno">2. </span>Conformance</a></li><li class="tocline"><a href="#use-cases-and-requirements" class="tocxref"><span class="secno">3. </span>Use Cases and Requirements</a></li><li class="tocline"><a href="#gap-analysis" class="tocxref"><span class="secno">4. </span>Gap Analysis</a></li><li class="tocline"><a href="#next-steps" class="tocxref"><span class="secno">5. </span>Next Steps</a></li><li class="tocline"><a href="#references" class="tocxref"><span class="secno">A. </span>References</a><ul class="toc"><li class="tocline"><a href="#normative-references" class="tocxref"><span class="secno">A.1 </span>Normative references</a></li></ul></li></ul></section>
+
+    
+    
+    <section id="introduction">
+      <!--OddPage--><h2 aria-level="1" role="heading" id="h2_introduction"><span class="secno">1. </span>Introduction</h2>
+     <p>
+      The Media APIs task force, part of the <abbr title="World Wide Web Consortium">W3C</abbr> Web and TV interest Group, merges the focus of three previously independent task forces (terminal, metadata and recording&amp;downloading) and focuses on:
+		</p><ul>
+		<li>Identify requirements for recording and downloading media</li>
+		<li>Investigate requirements for discover and control of device capabilities (e.g. tuner control)</li>
+		<li>Investigate how to expose TV metadata to web applications</li>
+		<li>Investigate mapping between Media Element API and in-band metadata</li>
+		<li>Synchronization of broadcast content and web applications up to frame accurate</li></ul>
+     <p></p>
+     
+     	The task force works in iterations. Each iteration is made of 4 phases of work:
+		<ul>
+			<li>Phase 1: collect use cases</li>
+			<li>Phase 2: generate requirements</li>
+			<li>Phase 3: perform gap analysis, i.e.: 
+				<ul>
+					<li>Identify whether the requirements have been covered by existing specs or not</li>
+					<li>If not, which specs/WGs would need to be addressed to fill these gaps?</li>
+				</ul> 
+			</li>
+			<li>Phase 4: consolidate UCs, reqs and gap analysis in one document and discuss next steps (reach out to WGs, etc)</li>
+		</ul>
+		
+		This document it's a report of the result of the first iteration of work of the Media APIs task force.
+     
+    </section>
+    
+    <section id="conformance" typeof="bibo:Chapter" resource="#ref" rel="bibo:Chapter"><!--OddPage--><h2 aria-level="1" role="heading" id="h2_conformance"><span class="secno">2. </span>Conformance</h2>
+<p>
+  As well as sections marked as non-normative, all authoring guidelines, diagrams, examples,
+  and notes in this specification are non-normative. Everything else in this specification is
+  normative.
+</p>
+<p>
+  The key words <em class="rfc2119" title="MUST">MUST</em>, <em class="rfc2119" title="MUST NOT">MUST NOT</em>, <em class="rfc2119" title="REQUIRED">REQUIRED</em>, <em class="rfc2119" title="SHOULD">SHOULD</em>, <em class="rfc2119" title="SHOULD NOT">SHOULD NOT</em>, <em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em>, <em class="rfc2119" title="MAY">MAY</em>,
+  and <em class="rfc2119" title="OPTIONAL">OPTIONAL</em> in this specification are to be interpreted as described in [<cite><a class="bibref" href="#bib-RFC2119">RFC2119</a></cite>].
+</p>
+
+    </section>
+    <section id="use-cases-and-requirements">
+    <!--OddPage--><h2 aria-level="1" role="heading" id="h2_use-cases-and-requirements"><span class="secno">3. </span>Use Cases and Requirements</h2>
+    
+    <p>
+    During the first phase of its work, the TF has asked members to contribute use cases that they were interested in investigating. 
+    Such use cases have been collected on the TF wiki and are  <a href="http://www.w3.org/2011/webtv/wiki/index.php?title=Media_APIs/Use_Cases&amp;oldid=2929">available here</a>
+    </p>
+    <p>
+    Starting from the Use Cases pointed above, the TF has derived a set of requirements; these are also recorded on the TF wiki and <a href="http://www.w3.org/2011/webtv/wiki/index.php?title=Media_APIs/Requirements&amp;oldid=2946">available here</a>
+    </p>
+    
+    <p>
+    The use cases and requirements have then been <a href="https://docs.google.com/spreadsheet/ccc?key=0AvACjV6qSvmxdEctdjYwa2JOalZLOG10elE1LVRZNlE#gid=0">cross-referenced in a spreadsheet</a> .
+    </p>
+    	
+	</section>
+	
+	<section id="gap-analysis">
+	<!--OddPage--><h2 aria-level="1" role="heading" id="h2_gap-analysis"><span class="secno">4. </span>Gap Analysis</h2>
+		<p>Based on the use cases and the requirements, the TF analyzed the gaps between the requirements and <abbr title="World Wide Web Consortium">W3C</abbr> specifications. 
+		The details of the result are <a href="https://docs.google.com/spreadsheet/ccc?key=0AvACjV6qSvmxdEctdjYwa2JOalZLOG10elE1LVRZNlE#gid=1">available here</a>. </p>
+		<p>There are 23 gaps across 10 specifications, which is summarized as follows:</p>
+		<table class="simple">
+			<thead>
+			<tr><th>Reqs</th><th>NSD</th><th>HTML5</th><th>HTML5.1</th><th>WebRTC</th><th>Web Storage</th><th>MSE</th><th>Push</th><th>Manifest</th><th>Service Worker</th><th>Web Crypto</th>
+			</tr></thead>
+			<tbody><tr><td>#4 Service Synchronization</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td></td><td></td></tr>
+			<tr><td>#5 Service Expiry</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td></td><td></td></tr>
+			<tr><td>#5.2 Application Authentication</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td></tr>
+			<tr><td>#6 Device Authentication</td><td></td><td></td><td></td><td></td><td>X</td><td></td><td></td><td></td><td></td><td></td></tr>
+			<tr><td>#7 Local Access Control</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+			<tr><td>#8 Local Network Service Protection</td><td>X</td><td></td><td></td><td></td><td>X</td><td></td><td></td><td></td><td></td><td></td></tr>
+			<tr><td>#10 Wake-up Mechanism</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td>X</td><td></td><td></td><td></td></tr>
+			<tr><td>#11 Service Information in Push Notification</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td></tr>
+			<tr><td>#12 Offline Mode</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td></td></tr>
+			<tr><td>#17 Tuner Control</td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+			<tr><td>#20 Content Download</td><td></td><td></td><td></td><td></td><td></td><td>X</td><td></td><td></td><td></td><td></td></tr>
+			<tr><td>#21 Metadata Protection</td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td></tr>
+			<tr><td>#21.B Metadata Protection (Offline)</td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td></tr>
+			<tr><td>#24 Content Recording while Watching</td><td></td><td></td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+		</tbody></table>
+	
+	
+		<p>Some gaps can be addressed by one specification as an obvious way. We need to communicate with corresponding Working Group and get the estimation of if and when the gaps can be bridged.</p>
+		<p>Some gaps can be addressed by 2 or more specifications. We should communicate with corresponding Working Groups (WG), and find the best path (if, which and when) to fill the gap.</p>
+		<p>One particular features gap #17 Tuner Control, whose gaps was identified in HTML5, may have to go through a different route considering the heavy workload in HTML WG 
+		and precedent of how other feature gaps was handled, e.g. MSE, EME, WebVTT etc. Either a specific Task Force in HTML WG needs to be established to address this gap through the extension method 
+		or a Community group needs to be initiated to work on a new specification that can bridge this gap.</p>
+		
+	</section>
+	
+	<section id="next-steps">
+	<!--OddPage--><h2 aria-level="1" role="heading" id="h2_next-steps"><span class="secno">5. </span>Next Steps</h2>
+	It is suggested that Web and TV IG take the following next steps:
+	<ul><li>Present the following WGs with the gaps and discuss the possible way to bridge those gaps:</li>
+	<ul>
+		<li>Device APIs WG – NSD</li>
+		<li>HTML WG – HTML5, HTML5.1, MSE</li>
+		<li>WebApps WG – Manifest, Push, Service Worker, Web Storage</li>
+		<li>Web Crypto WG – Web Crypto API</li>
+		<li>WebRTC WG – WebRTC</li>
+	</ul>
+	<li>Look into the possibility to initiated a Community Group to address the gap in Tuner Control</li>
+	</ul>
+	</section>
+  
+<section id="references" class="appendix" typeof="bibo:Chapter" resource="#ref" rel="bibo:Chapter"><!--OddPage--><h2 aria-level="1" role="heading" id="h2_references"><span class="secno">A. </span>References</h2><section id="normative-references" typeof="bibo:Chapter" resource="#ref" rel="bibo:Chapter"><h3 aria-level="2" role="heading" id="h3_normative-references"><span class="secno">A.1 </span>Normative references</h3><dl class="bibliography" about=""><dt id="bib-RFC2119">[RFC2119]</dt><dd rel="dcterms:requires">S. Bradner. <a href="http://www.ietf.org/rfc/rfc2119.txt"><cite>Key words for use in RFCs to Indicate Requirement Levels.</cite></a> March 1997. Internet RFC 2119.  URL: <a href="http://www.ietf.org/rfc/rfc2119.txt">http://www.ietf.org/rfc/rfc2119.txt</a> 
+</dd></dl></section></section></body></html>

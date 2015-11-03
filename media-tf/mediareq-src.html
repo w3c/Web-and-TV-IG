@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Requirements from the Media API TF</title>
+    <meta charset='utf-8'>
+    <script src='http://www.w3.org/Tools/respec/respec-w3c-common'
+            async class='remove'></script>
+    <script class='remove'>
+      var respecConfig = {
+          specStatus: "NOTE",
+          shortName:  "mediareq",
+          editors: [
+                {   name:       "Giuseppe Pascale",
+                    url:        "",
+                    company:    "Opera",
+                    companyURL: "http://www.opera.com/" },
+                {   name:       "Bin Hu",
+                    url:        "",
+                    company:    "AT&T",
+                    companyURL: "http://www.att.com/" },
+          ],
+          previousMaturity: "WD",
+          previousPublishDate:  "",
+          wg:           "Web and TV Interest Group",
+          wgURI:        "http://www.w3.org/2011/webtv/",
+          wgPublicList: "public-web-and-tv",
+          wgPatentURI:  "http://www.w3.org/2004/01/pp-impl/424242/status",
+      };
+    </script>
+  </head>
+  <body>
+    <section id='abstract'>
+      <p>
+        This document lists the use cases, implied requirements and identified gaps that the Media API TF of the Web and TV IG has considered during its first iteration of work (March 2013 - February 2014)
+      </p>
+    </section>
+
+    <section id='sotd'>
+      <p>
+  
+      </p>
+    </section>
+    
+    <section>
+      <h2>Introduction</h2>
+     <p>
+      The Media APIs task force, part of the W3C Web and TV interest Group, merges the focus of three previously independent task forces (terminal, metadata and recording&downloading) and focuses on:
+		<ul>
+		<li>Identify requirements for recording and downloading media</li>
+		<li>Investigate requirements for discover and control of device capabilities (e.g. tuner control)</li>
+		<li>Investigate how to expose TV metadata to web applications</li>
+		<li>Investigate mapping between Media Element API and in-band metadata</li>
+		<li>Synchronization of broadcast content and web applications up to frame accurate</li></ul>
+     </p>
+     
+     	The task force works in iterations. Each iteration is made of 4 phases of work:
+		<ul>
+			<li>Phase 1: collect use cases</li>
+			<li>Phase 2: generate requirements</li>
+			<li>Phase 3: perform gap analysis, i.e.: 
+				<ul>
+					<li>Identify whether the requirements have been covered by existing specs or not</li>
+					<li>If not, which specs/WGs would need to be addressed to fill these gaps?</li>
+				</ul> 
+			</li>
+			<li>Phase 4: consolidate UCs, reqs and gap analysis in one document and discuss next steps (reach out to WGs, etc)</li>
+		</ul>
+		
+		This document it's a report of the result of the first iteration of work of the Media APIs task force.
+     
+    </section>
+    
+    <section id="conformance">
+    </section>
+    <section>
+    <h2>Use Cases and Requirements</h2>
+    
+    <p>
+    During the first phase of its work, the TF has asked members to contribute use cases that they were interested in investigating. 
+    Such use cases have been collected on the TF wiki and are  <a href="http://www.w3.org/2011/webtv/wiki/index.php?title=Media_APIs/Use_Cases&oldid=2929">available here</a>
+    </p>
+    <p>
+    Starting from the Use Cases pointed above, the TF has derived a set of requirements; these are also recorded on the TF wiki and <a href="http://www.w3.org/2011/webtv/wiki/index.php?title=Media_APIs/Requirements&oldid=2946">available here</a>
+    </p>
+    
+    <p>
+    The use cases and requirements have then been <a href="https://docs.google.com/spreadsheet/ccc?key=0AvACjV6qSvmxdEctdjYwa2JOalZLOG10elE1LVRZNlE#gid=0">cross-referenced in a spreadsheet</a> .
+    </p>
+    	
+	</section>
+	
+	<section>
+	<h2>Gap Analysis</h2>
+		<p>Based on the use cases and the requirements, the TF analyzed the gaps between the requirements and W3C specifications. 
+		The details of the result are <a href="https://docs.google.com/spreadsheet/ccc?key=0AvACjV6qSvmxdEctdjYwa2JOalZLOG10elE1LVRZNlE#gid=1">available here</a>. </p>
+		<p>There are 23 gaps across 10 specifications, which is summarized as follows:</p>
+		<table class="simple">
+			<thead>
+			<th>Reqs</th><th>NSD</th><th>HTML5</th><th>HTML5.1</th><th>WebRTC</th><th>Web Storage</th><th>MSE</th><th>Push</th><th>Manifest</th><th>Service Worker</th><th>Web Crypto</th>
+			</thead>
+			<tr><td>#4 Service Synchronization</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td></td><td></td></tr>
+			<tr><td>#5 Service Expiry</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td></td><td></td></tr>
+			<tr><td>#5.2 Application Authentication</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td></tr>
+			<tr><td>#6 Device Authentication</td><td></td><td></td><td></td><td></td><td>X</td><td></td><td></td><td></td><td></td><td></td></tr>
+			<tr><td>#7 Local Access Control</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+			<tr><td>#8 Local Network Service Protection</td><td>X</td><td></td><td></td><td></td><td>X</td><td></td><td></td><td></td><td></td><td></td></tr>
+			<tr><td>#10 Wake-up Mechanism</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td>X</td><td></td><td></td><td></td></tr>
+			<tr><td>#11 Service Information in Push Notification</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td></tr>
+			<tr><td>#12 Offline Mode</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td></td></tr>
+			<tr><td>#17 Tuner Control</td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+			<tr><td>#20 Content Download</td><td></td><td></td><td></td><td></td><td></td><td>X</td><td></td><td></td><td></td><td></td></tr>
+			<tr><td>#21 Metadata Protection</td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td></tr>
+			<tr><td>#21.B Metadata Protection (Offline)</td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td></tr>
+			<tr><td>#24 Content Recording while Watching</td><td></td><td></td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+		</table>
+	
+	
+		<p>Some gaps can be addressed by one specification as an obvious way. We need to communicate with corresponding Working Group and get the estimation of if and when the gaps can be bridged.</p>
+		<p>Some gaps can be addressed by 2 or more specifications. We should communicate with corresponding Working Groups (WG), and find the best path (if, which and when) to fill the gap.</p>
+		<p>One particular features gap #17 Tuner Control, whose gaps was identified in HTML5, may have to go through a different route considering the heavy workload in HTML WG 
+		and precedent of how other feature gaps was handled, e.g. MSE, EME, WebVTT etc. Either a specific Task Force in HTML WG needs to be established to address this gap through the extension method 
+		or a Community group needs to be initiated to work on a new specification that can bridge this gap.</p>
+		
+	</section>
+	
+	<section>
+	<h2>Next Steps</h2>
+	It is suggested that Web and TV IG take the following next steps:
+	<ul><li>Present the following WGs with the gaps and discuss the possible way to bridge those gaps:</li>
+	<ul>
+		<li>Device APIs WG – NSD</li>
+		<li>HTML WG – HTML5, HTML5.1, MSE</li>
+		<li>WebApps WG – Manifest, Push, Service Worker, Web Storage</li>
+		<li>Web Crypto WG – Web Crypto API</li>
+		<li>WebRTC WG – WebRTC</li>
+	</ul>
+	<li>Look into the possibility to initiated a Community Group to address the gap in Tuner Control</li>
+	</ul>
+	</section>
+  </body>
+</html>
