@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>MPTF Requirements for Content Protection</title>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+<!-- 
+         === NOTA BENE ===
+         For the three scripts below, if your spec resides on dev.w3 you can check them
+         out in the same tree and use relative links so that they'll work offline,
+         -->
+<script src='http://dev.w3.org/2009/dap/ReSpec.js/js/respec.js'
+	class='remove' type="text/javascript"></script>
+<script class='remove' type="text/javascript">
+            var respecConfig = {
+            // specification status (e.g. WD, LCWD, NOTE, etc.). If in doubt use ED.
+            specStatus:           "ED",
+            
+            // the specification's short name, as in http://www.w3.org/TR/short-name/
+            shortName:            "cpreq",
+            
+            // if your specification has a subtitle that goes below the main
+            // formal title, define it here
+            // subtitle   :  "an excellent document",
+            
+            // if you wish the publication date to be other than today, set this
+            // publishDate:  "2009-08-06",
+            publishDate:  "2012-08-16",
+            
+            // if the specification's copyright date is a range of years, specify
+            // the start date here:
+            // copyrightStart: "2005"
+            
+            // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+            // and its maturity status
+            // previousPublishDate:  "1977-03-15",
+            // previousMaturity:  "WD","
+            previousMaturity:  "ED",
+            
+            // if there a publicly available Editor's Draft, this is the link
+            // edDraftURI:           "http://dev.w3.org/2009/dap/ReSpec.js/documentation.html",
+            edDraftURI:           "https://dvcs.w3.org/hg/webtv/raw-file/tip/mpreq/cpreq.html",
+            
+            // if this is a LCWD, uncomment and set the end of its review period
+            // lcEnd: "2009-08-05",
+            
+            // if you want to have extra CSS, append them to this list
+            // it is recommended that the respec.css stylesheet be kept
+            extraCSS:             ["http://dev.w3.org/2009/dap/ReSpec.js/css/respec.css"],
+            
+            // editors, add as many as you like
+            // only "name" is required
+            editors:  [
+            { name: "Clarke Stevens", url: "http://example.org/",
+            company: "CableLabs", companyURL: "http://www.cablelabs.com" },
+            ],
+            
+            // authors, add as many as you like. 
+            // This is optional, uncomment if you have authors as well as editors.
+            // only "name" is required. Same format as editors.
+            
+            //authors:  [
+            //    { name: "Your Name", url: "http://example.org/",
+            //      company: "Your Company", companyURL: "http://example.com/" },
+            //],
+            
+            // name of the WG
+            wg:           "Media Pipeline Task Force of the Web & TV IG",
+            
+            // URI of the public WG page
+            wgURI:        "http://www.w3.org/2011/webtv/wiki/MPTF",
+            
+            // name (without the @w3c.org) of the public mailing to which comments are due
+            wgPublicList: "spec-writers-anonymous",
+            
+            // URI of the patent status for this WG, for Rec-track documents
+            // !!!! IMPORTANT !!!!
+            // This is important for Rec-track documents, do not copy a patent URI from a random
+            // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
+            // Team Contact.
+            wgPatentURI:  "",
+            };
+            </script>
+</head>
+<body>
+	<section id='abstract'>
+	This document lists the design goals and requirements that
+	content protection should support for Web
+	and TV applications. Also this document includes links to
+    concrete proposals that are intended to meet the
+	requirements developed by the Web and TV Interest Group
+	participants.
+    
+    The MPTF is a subset of the Web and TV
+		Interest Group. The goal of MPTF is to discuss requirements placed on
+		the HTML5 video, audio and media interfaces by media formats that used
+		for Web and TV applications. The MPTF also proposes APIs that meet
+		these requirements.</section>
+
+	<section id="sotd">
+    The MPTF is a subset of the Web and TV Interest Group. The
+	goal of MPTF is to discuss requirements placed on the HTML5
+	video, audio and media interfaces by media formats that are used
+	for Web and TV applications.  The MPTF also proposes APIs that
+	meet these requirements.
+    
+    The requirements and use cases in this document are the result
+    of discussion within the Media Pipeline Task Force of the Web
+    and TV Interest Group.  This document proposes additions to
+    the HTML5 specification so that user agents can enable authorized
+    access to premium content through
+    a standard set of APIs in an interoperable way.
+    
+    This proposal extends the capability of HTML5's &lt;video&gt;
+    and &lt;audio&gt; elements to allow JavaScript to manage
+    authorized access to premium
+    media streams for playback. The requirements do not limit
+    the particular content protection method. Rather they provice a
+    standardized API as well as a default content protection method
+    to enable both proprietary and open content protection solutions.
+    
+    The Task Force believes all the requirements and use cases
+    listed in this document will be next reviewd and discussed by
+    the HTML Working Group for inclusion in the HTML
+    specification.
+    </section>
+
+	<section>
+		<h2>Introduction</h2>
+		<p>A majority of Internet traffic is now streaming video.</p>
+
+		<p>However, there are currently no standards or common conventions
+			in HTML to provide the level of content protection required by some
+			content owners. As a result, content owners must support multiple,
+			non-interoperable private content protection solutions.</p>
+	</section>
+
+	<section>
+		<h2>Conformance</h2>
+
+		<p>As well as sections marked as non-normative, all authoring
+			guidelines, diagrams, examples, and notes in this specification are
+			non-normative. Everything else in this specification is normative.</p>
+
+		<p>The key words MUST, MUST NOT, SHALL, SHOULD and SHOULD NOT in
+			this specification are to be interpreted as described in RFC 2119
+			[[RFC2119]].</p>
+
+		<p>
+			This specification only applies to one class of product:
+			<dfn>W3C Technical Reports</dfn>
+			. A number of specifications may be created to address the
+			requirements enumerated in this document. In some cases the union of
+			multiple parts of different specifications may be needed to address a
+			single requirement. Nevertheless, this document speaks only of
+			<dfn>conforming specifications</dfn>
+			.
+		</p>
+
+		<p>Conforming specifications are ones that address one or more
+			requirements listed in this document. Conforming specifications
+			should attempt to address SHOULD level requirements requirements
+			unless there is a technically valid reason not to do so.</p>
+	</section>
+
+	<section>
+		<h2>Terminology</h2>
+
+		<dl>
+			<dt>
+				<dfn>Adaptive Bit Rate</dfn>
+			</dt>
+			<dd>Adaptive bit rate media is characterized by short
+				independent parallel media stream segments that can be individually
+				selected and rendered according to some selective criteria.
+				Typically, the parallel segments are differentiated by a feature
+				such as required bandwidth, image resolution, etc.</dd>
+			<dt>
+				<dfn>Content Decryption Module (CDM)</dfn>
+			</dt>
+			<dd>The Content Decryption Module (CDM) is a generic term for a
+				part of or add-on to the user agent that provides functionality for
+				one or more Key Systems. Implementations may or may not separate the
+				implementations of CDMs and may or may not treat them as separate
+				from the user agent. This is transparent to the API and application.
+				A user agent may support one or more CDMs.</dd>
+		</dl>
+	</section>
+
+	<section>
+		<h2>MPTF Requirements for Content Protection</h2>
+
+		<p>This section list the requirements that conforming
+			specification(s) would need to adopt in order to ensure a common
+			interface and interpretation for the playback and control of
+			protected media. These requirements are the result of an interactive
+			process of feedback and discussion within the Media Pipeline Task
+			Force of the Web and TV Interest Group</p>
+
+		<section>
+			<h3>Background</h3>
+			<ol>
+				<li>The Media Pipeline Task Force takes no position on the
+					specifics of the legal agreements (referred to hereinafter
+					collectively as "the agreement.") between users, content owners and
+					content distibution service providers. The objective of the MPTF
+					regarding content protection is to identify requirements for the
+					technical tools to enable the terms of those agreements.</li>
+				<li>The requirements below will not be perfect. There is no
+					system that can absolutely guarantee the intended behavior in all
+					cases. When perfection cannot be achieved, a reasonable solution
+					(as agreed upon by the MPTF) should be adopted.</li>
+			</ol>
+
+			<section>
+				<h3>General</h3>
+				<section>
+					<h4>User Rights</h4>
+					<h5>Content protection methods must enable the rights of the
+						user as specified in the agreement (See item 1 in Backgroud
+						section above).</h5>
+					<p>The user should not be restricted from accessing content for
+						which legal rights have been obtained.</p>
+				</section>
+
+				<section>
+					<h4>Owner Rights</h4>
+					<h5>Content protection methods must protect the rights of the
+						content owners as specified in the agreement.</h5>
+					<p>The content owners control the legal rights to the content.
+						If their rights are not protected, they are less likely to produce
+						the high-value content that drives the commercial video business.</p>
+				</section>
+
+				<section>
+					<h4>Distributor Rights</h4>
+					<h5>Content protection methods must protect the rights of the
+						distribution service provider as specified in the agreement.</h5>
+					<p>Content distributors also have certain rights and
+						obligations as specified in the agreement. Content must be
+						protected in transit so as not to be intercepted and used without
+						authorization.</p>
+				</section>
+
+				<section>
+					<h4>Container Format</h4>
+					<h5>The content protection solution (the standard interface to
+						support content protection) must not advantage one specific
+						container format over another.</h5>
+					<p>Specifically, the choice of container format should not
+						prevent the content protection system from operating.</p>
+				</section>
+
+				<section>
+					<h4>Mandatory Baseline</h4>
+					<h5>The content protection solution (the standard interface to
+						support content protection) must support at least one mandatory
+						method that can be used to enable interoperability between
+						different systems.</h5>
+					<p>Support for a baseline content protection solution allows at
+						least one method for protected content to be distributed and used.
+						This method should be unencumbered with IPR.</p>
+				</section>
+
+				<section>
+					<h4>Browser Independence</h4>
+					<h5>The content protection solution (the standard interface
+						defined to support content protection) must work with "open
+						source" browsers</h5>
+					<p>Specifically, the interface defined by the proposed solution
+						should be implementable in any browser without requiring any
+						privileged information. This scope of this requirement is limited
+						to the interface defined in the proposed solution.</p>
+				</section>
+
+				<section>
+					<h4>HTML5 Compatibility</h4>
+					<h5>Content protection must be useable in HTML5</h5>
+					<p>The implementation of content protection must be capable of
+						running within an HTML5 environment. This means any browser
+						supportive of HTML5 will be able to specify the parameters and use
+						the appropriate tags to get the protected content to play back.</p>
+				</section>
+
+				<section>
+					<h4>Media Elements</h4>
+					<h5>(consensus not yet reached) Content protection must be
+						useable with specific HTML5 features such as media elements (and
+						features (such as timed tracks) within these elements).</h5>
+					<p>Timed text tracks and other features of HTML5 media tags
+						must work with protected media streams as described in this
+						requirements document. The use of any of these features must not
+						disable or prevent the use of a compliant implementation of
+						protected media.</p>
+				</section>
+
+				<section>
+					<h4>Encrypted Content</h4>
+					<h5>(consensus not yet reached) Media element features that
+						are available in an implementation must be available for encrypted
+						content as well as unencrypted content.</h5>
+					<p>This is the corrolary to the previous requirement. The use
+						of any compliant content protection system must not disable or
+						prevent the use of any particular media element features.</p>
+				</section>
+
+				<section>
+					<h4>Common Errors</h4>
+					<h5>Specific errors relevant to content protections must be
+						identified and reportable.</h5>
+					<p>The primary errors must be common across different content
+						protection systems so that the unique details of the protection
+						method are not required to be known in advance</p>
+				</section>
+
+				<section>
+					<h4>Adaptive Bit Rate Media</h4>
+					<h5>The content protection solution (the standard interface
+						defined to support content protection) must be compatible with
+						adaptive bit rate media.</h5>
+					<p>The content protection solution must work with adaptive bit
+						rate streaming as well as traditional non-adaptive streaming
+						methods. This ensures that the content protection systems will
+						work with emerging streaming media types.</p>
+				</section>
+
+				<section>
+					<h4>Others...</h4>
+					<p>Description...</p>
+				</section>
+
+			</section>
+
+		</section>
+
+		<section>
+			<h2>Use Cases</h2>
+
+
+			<p>This section is a non-exhaustive list of use cases that would
+				be enabled by one (or more) specifications implementing the
+				requirements listed above. Each use case is written according to the
+				following template:</p>
+
+			<dl>
+				<dt>Ux. &lt;TITLE&gt;</dt>
+				<dd>Use case title</dd>
+
+				<dt>Description</dt>
+				<dd>
+					<ul>
+						<li>High level description/overview of the goals of the use
+							case</li>
+						<li>Schematic illustration (devices involved, work flows,
+							etc.) (Optional)</li>
+					</ul>
+				</dd>
+
+				<dt>Motivation</dt>
+				<dd>
+					<ul>
+						<li>Explanation of the benefit to the ecosystem</li>
+						<li>Why existing standards cannot be used to accomplish this
+							use case</li>
+					</ul>
+				</dd>
+
+				<dt>Dependencies</dt>
+				<dd>Other use cases, proposals or other ongoing standardization
+					activities which this use case is dependent on or related to.</dd>
+
+				<dt>Requirements</dt>
+				<dd>List of requirements implied by this Use Case.</dd>
+			</dl>
+
+			<section>
+				<h3>U1. Support Authorized Access to Content</h3>
+
+				<dl>
+					<dt>Description</dt>
+					<dd>
+						<p>This use case is intended to illustrate the protection of
+							the rights of users, owners and distributors of digital media
+							according to a mutually supported contract. The use case does not
+							stipulate the terms of any contract, it just requires the
+							specification of features that enable the terms of an anticipated
+							contract. For users, this means specification of features that
+							can accurately determine a user's rights and the features to
+							allow or deny user access to content based on those rights.</p>
+						<p>For a content owner, this use case requires the
+							specification of features that allow the owner to ensure
+							compensation for the use of content owned by the owner according
+							to the contract between the owner, distributors and users. For
+							the distributor, this use case requires the specification of
+							features that enable the secure distribution of content between
+							owners and users such that the contract between owners and users
+							can be accurately executed and vioation of that contract can be
+							prevented.</p>
+						<p>Since all systems for providing the protection described
+							above are vulnerable and violation of the protections is
+							potentially lucrative, the system must be flexible enough to
+							evolve to meet changing threats.</p>
+
+						<p>Possible implementation:</p>
+						<ul>
+							<li>The user selects a content item for playback.</li>
+							<li>The user's rights to play the content are automatically
+								verified.</li>
+							<li>Assuming the rights are verified, the content plays.
+								Otherwise, the content is prevented from playing.</li>
+						</ul>
+					</dd>
+
+					<dt>Motivation</dt>
+					<dd>
+						<p>There is no standard interface to verify a user's right to
+							access premium content. This leads to the implementation of
+							multiple incompatible rights authorization systems and
+							interfaces. What should be standardized is:</p>
+						<ul>
+							<li>an interface to specify the content protection system;</li>
+							<li>an interface to allow any content protection system to
+								be used to protect content;</li>
+							<li>an interface to allow a user to gain legitimate access
+								and prevent illegitimate access to content;</li>
+							<li>an interface that allows the content protection provider
+								to change the system over time to meet evolving threats without
+								requiring changes to the interface</li>
+						</ul>
+					</dd>
+
+					<dt>Dependencies</dt>
+					<dd>
+						<p>In order to obtain access to protected content, the content
+							protection system must be identified and proper credentials need
+							to be provided.</p>
+					</dd>
+
+					<dt>Requirements</dt>
+					<dd>
+						<table>
+							<tr>
+								<th>Low Level</th>
+								<th>High Level</th>
+							</tr>
+							<tr>
+								<td>Enable the rights of the user</td>
+								<td><a href="#user-rights" class="sectionRef"></a></td>
+							</tr>
+							<tr>
+								<td>Enable the rights of the content owner</td>
+								<td><a href="#owner-rights" class="sectionRef"></a></td>
+							</tr>
+							<tr>
+								<td>Enable the rights of the content distributor</td>
+								<td><a href="#distributor-rights" class="sectionRef"></a></td>
+							</tr>
+						</table>
+					</dd>
+				</dl>
+			</section>
+
+			<section>
+				<h3>U2. Support for Commonly-used Container Formats</h3>
+
+				<dl>
+					<dt>Description</dt>
+					<dd>
+						<p>This use case describes the need for a system that is
+							flexible enough to support different implementations of content
+							protection. Specifically, it must not unreasonably limit the
+							container format to a design that excludes common
+							implementations. The system must be flexible enough to multiple
+							content protection systems simultaneously. For example, it must
+							be capble of playing back programming in one supported protection
+							system, then switching to another supported protection system on
+							a subsequent piece of programming.</p>
+
+						<p>Possible implementation:</p>
+						<ul>
+							<li>Content that is encrypted is specified for playback.</li>
+							<li>The content protection method is applied and the
+								decrypted content is played.</li>
+							<li>A new encrypted media segment using a different copy
+								protection system is selected for playback</li>
+							<li>The new content protection method is applied and the
+								decrypted content is played</li>
+						</ul>
+					</dd>
+
+					<dt>Motivation</dt>
+					<dd>
+						<p>What should be standardized is:</p>
+						<ul>
+							<li>A common interface for specifying the container format
+								and protection system</li>
+						</ul>
+					</dd>
+
+					<dt>Dependencies</dt>
+					<dd>
+						<p>The implementation is dependent upon the the commonality
+							between different container formats and a defining a common way
+							to specify them.</p>
+					</dd>
+
+					<dt>Requirements</dt>
+					<dd>
+						<table>
+							<tr>
+								<th>Low Level</th>
+								<th>High Level</th>
+							</tr>
+							<tr>
+								<td>Specify the container format</td>
+								<td><a href="#container-format" class="sectionRef"></a></td>
+							</tr>
+						</table>
+					</dd>
+				</dl>
+			</section>
+
+			<section>
+				<h3>U3. Support for a Baseline CDM</h3>
+
+				<dl>
+					<dt>Description</dt>
+					<dd>
+						<p>This use case describes a baseline CDM (e.g. ClearKey) that
+							can be implemented by a user agent in any browser. A baseline CDM
+							ensures that there is a way for content to be encoded that allows
+							for interoperability between implementations. If a content
+							provider encodes content compatible with the baseline CDM, it
+							should be playable on any client platform.</p>
+
+						<p>Possible implementation:</p>
+						<ul>
+							<li>A common CDM is defined that can be implemented in open
+								source code.</li>
+							<li>Content that is expected to run on all platforms must be
+								encoded using the common CDM.</li>
+							<li>When the content is selected for playback, the common
+								CDM is used to decrypt it prior to playback.</li>
+						</ul>
+					</dd>
+
+					<dt>Motivation</dt>
+					<dd>
+						<p>What should be standardized is:</p>
+						<ul>
+							<li>A common CDM that can be implemented in open source
+								code.</li>
+						</ul>
+					</dd>
+
+					<dt>Dependencies</dt>
+					<dd>
+						<p>The implementation of this use case is dependent upon the
+							premise of a system that is both secure and implementable with
+							open source code.</p>
+					</dd>
+
+					<dt>Requirements</dt>
+					<dd>
+						<table>
+							<tr>
+								<th>Low Level</th>
+								<th>High Level</th>
+							</tr>
+							<tr>
+								<td>Define a mandatory basline content protection method</td>
+								<td><a href="#mandatory-baseline" class="sectionRef"></a></td>
+							</tr>
+						</table>
+					</dd>
+				</dl>
+			</section>
+
+			<section>
+				<h3>U4. Support for Browser-independent Implementation</h3>
+
+				<dl>
+					<dt>Description</dt>
+					<dd>
+						<p>In this use case, the ability to get access to content is
+							dependent upon the use of compatible content formats and
+							legitimate credentials. These requirements must be
+							implementatable by any browser, including and open source
+							browser, and the implementation must report common errors.</p>
+
+						<p>Possible implementation:</p>
+						<ul>
+							<li>The user selects copy-protected content for playback.</li>
+							<li>The copy protection system requests credentials to
+								authorize the playback of the protected content.</li>
+							<li>The user provides credetials (or previously provided
+								credentials are retrieved) in a way that is common regardless of
+								the particular browser platform.</li>
+							<li>Once the credentials are verified, the copy protection
+								method is applied and the decrypted content is played back.</li>
+						</ul>
+					</dd>
+
+					<dt>Motivation</dt>
+					<dd>
+						<p>What should be standardized is:</p>
+						<ul>
+							<li>A common method for authorization assertion that is
+								independent of the particular browser.</li>
+						</ul>
+					</dd>
+
+					<dt>Dependencies</dt>
+					<dd>
+						<p>None.</p>
+					</dd>
+
+					<dt>Requirements</dt>
+					<dd>
+						<table>
+							<tr>
+								<th>Low Level</th>
+								<th>High Level</th>
+							</tr>
+							<tr>
+								<td>Require implementation to be browser-independent</td>
+								<td><a href="#browser-independence" class="sectionRef"></a></td>
+							</tr>
+							<tr>
+								<td>Require compatibility with HTML5</td>
+								<td><a href="#html5-compatibility" class="sectionRef"></a></td>
+							</tr>
+							<tr>
+								<td>Require compatiblity with HTML5 media elements</td>
+								<td><a href="#media-elements" class="sectionRef"></a></td>
+							</tr>
+						</table>
+					</dd>
+				</dl>
+			</section>
+
+			<section>
+				<h3>U5. The player must support playback of Encrypted Adaptive
+					Bit-rate Content</h3>
+
+				<dl>
+					<dt>Description</dt>
+					<dd>
+						<p>In this use case, a player renders encrypted adaptive
+							bit-rate content. The encryption method doesn't limit the ability
+							of the player to play the content. Specifically, the fragmented
+							nature of adaptive bit-rate content doesn't limit the use of the
+							encryption method.</p>
+
+						<p>Possible implementation:</p>
+						<ul>
+							<li>The user selects encrypted adaptive bit rate (ABR)
+								content for playback.</li>
+							<li>The content is decrypted and played back using the same
+								process as non-adaptive bit-rate content.</li>
+						</ul>
+					</dd>
+
+					<dt>Motivation</dt>
+					<dd>
+						<p>What should be standardized is:</p>
+						<ul>
+							<li>A content protection system that works for adaptive
+								bit-rate content as well as non-adaptive bit-rate content.</li>
+						</ul>
+					</dd>
+
+					<dt>Dependencies</dt>
+					<dd>
+						<p>None</p>
+					</dd>
+
+					<dt>Requirements</dt>
+					<dd>
+						<table>
+							<tr>
+								<th>Low Level</th>
+								<th>High Level</th>
+							</tr>
+							<tr>
+								<td>Playback of encrypted content</td>
+								<td><a href="#encrypted-content" class="sectionRef"></a></td>
+							</tr>
+						</table>
+					</dd>
+				</dl>
+			</section>
+
+		</section>
+
+		<section>
+			<h2>Next Steps</h2>
+
+			<ul>
+				<li>Make any necessary changes or refinements in this document</li>
+				<li>Submit this document to the appropriate W3C WC (likely
+					HTML) for development of specification.</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Proposals</h2>
+
+			<section>
+				<h3>
+					<a
+						href="http://dvcs.w3.org/hg/html-media/raw-file/tip/encrypted-media/encrypted-media.html">Encrypted
+						Media Extensions(Draft Proposal) (David Dorwin, Adrian Bateman,
+						Mark Watson)</a>
+				</h3>
+
+				<p>This proposal was jointly developed by Microsoft, Google and
+					Netflix. It is comprehensive and is intended to meet the
+					requirements described in this document.</p>
+			</section>
+
+			<section class='appendix'>
+				<h2>Acknowledgements</h2>
+				<p>Many thanks to the members of the Media Pipeline Task Force
+					of the W3C Web & TV Interest Group who collaborated to create this
+					requirements document and reviewed the proposal to be submitted to
+					the HTML WG for inclusion in the HTML specification.</p>
+			</section>
+		</section>
+	</section>
+</body>
+</html>

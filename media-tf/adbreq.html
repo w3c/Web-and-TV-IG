@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>MPTF Requirements for Adaptive Bit Rate Streaming</title>
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+<!-- 
+         === NOTA BENE ===
+         For the three scripts below, if your spec resides on dev.w3 you can check them
+         out in the same tree and use relative links so that they'll work offline,
+         -->
+<script src='http://dev.w3.org/2009/dap/ReSpec.js/js/respec.js'
+	class='remove' type="text/javascript"></script>
+<script class='remove' type="text/javascript">
+            var respecConfig = {
+            // specification status (e.g. WD, LCWD, NOTE, etc.). If in doubt use ED.
+            specStatus:           "ED",
+            
+            // the specification's short name, as in http://www.w3.org/TR/short-name/
+            shortName:            "adbreq",
+            
+            // if your specification has a subtitle that goes below the main
+            // formal title, define it here
+            // subtitle   :  "an excellent document",
+            
+            // if you wish the publication date to be other than today, set this
+            // publishDate:  "2009-08-06",
+            publishDate:  "2012-08-16",
+            
+            // if the specification's copyright date is a range of years, specify
+            // the start date here:
+            // copyrightStart: "2005"
+            
+            // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+            // and its maturity status
+            // previousPublishDate:  "1977-03-15",
+            // previousMaturity:  "WD",
+            previousMaturity:  "ED",
+            
+            // if there a publicly available Editor's Draft, this is the link
+            // edDraftURI:           "http://dev.w3.org/2009/dap/ReSpec.js/documentation.html",
+            edDraftURI:           "https://dvcs.w3.org/hg/webtv/raw-file/tip/mpreq/adbreq.html",
+            
+            // if this is a LCWD, uncomment and set the end of its review period
+            // lcEnd: "2009-08-05",
+            
+            // if you want to have extra CSS, append them to this list
+            // it is recommended that the respec.css stylesheet be kept
+            extraCSS:             ["http://dev.w3.org/2009/dap/ReSpec.js/css/respec.css"],
+            
+            // editors, add as many as you like
+            // only "name" is required
+            editors:  [
+            { name: "Clarke Stevens", url: "http://example.org/",
+            company: "CableLabs", companyURL: "http://www.cablelabs.com" },
+            ],
+            
+            // authors, add as many as you like. 
+            // This is optional, uncomment if you have authors as well as editors.
+            // only "name" is required. Same format as editors.
+            
+            //authors:  [
+            //    { name: "Your Name", url: "http://example.org/",
+            //      company: "Your Company", companyURL: "http://example.com/" },
+            //],
+            
+            // name of the WG
+            wg:           "Media Pipeline Task Force of the Web & TV IG",
+            
+            // URI of the public WG page
+            wgURI:        "http://www.w3.org/2011/webtv/wiki/MPTF",
+            
+            // name (without the @w3c.org) of the public mailing to which comments are due
+            wgPublicList: "spec-writers-anonymous",
+            
+            // URI of the patent status for this WG, for Rec-track documents
+            // !!!! IMPORTANT !!!!
+            // This is important for Rec-track documents, do not copy a patent URI from a random
+            // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
+            // Team Contact.
+            wgPatentURI:  "",
+            };
+            </script>
+</head>
+<body>
+	<section id='abstract'>
+	This document lists the design goals and requirements that
+	HTML5 video, audio and media interfaces should support for Web
+	and TV applications. Also this document includes links to
+	several concrete proposals that are intended to meet the
+	requirements developed by the Web and TV Interest Group
+	participants.
+        </section>
+
+	<section id="sotd">
+        The MPTF is a subset of the Web and TV Interest Group. The
+	goal of MPTF is to discuss requirements placed on the HTML5
+	video, audio and media interfaces by media formats that used
+	for Web and TV applications.  The MPTF also proposes APIs that
+	meet these requirements.
+
+        The requirements and use cases in this document are the result
+        of discussion within the Media Pipeline Task Force of the Web
+        and TV Interest Group.  This document proposes additions to
+        the HTML5 specification so that user agents can make bandwidth
+        measurements and control adaptive streaming using a set of
+        APIs in an interoperable way.
+
+        This proposal extends the capability of HTML5's &lt;video&gt;
+        and &lt;audio&gt; elements to allow JavaScript to generate
+        media streams for playback. Allowing JavaScript to generate
+        streams facilitates a variety of use cases like adaptive
+        streaming and time shifting live streams.
+
+        The Task Force believes all the requirements and use cases
+        listed in this document will be next reviewd and discussed by
+        the HTML Working Group for inclusion in the HTML
+        specification.
+        </section>
+
+	<section>
+		<h2>Introduction</h2>
+		<p>A majority of Internet traffic is now streaming video.</p>
+
+		<p>However, there are currently no standards or common conventions
+			to provide commercial quality IP streaming video across different
+			platforms and between unrelated companies.</p>
+	</section>
+
+	<section>
+		<h2>Conformance</h2>
+
+		<p>As well as sections marked as non-normative, all authoring
+			guidelines, diagrams, examples, and notes in this specification are
+			non-normative. Everything else in this specification is normative.</p>
+
+		<p>The key words MUST, MUST NOT, SHALL, SHOULD and SHOULD NOT in
+			this specification are to be interpreted as described in RFC 2119
+			[[RFC2119]].</p>
+
+		<p>
+			This specification only applies to one class of product:
+			<dfn>W3C Technical Reports</dfn>
+			. A number of specifications may be created to address the
+			requirements enumerated in this document. In some cases the union of
+			multiple parts of different specifications may be needed to address a
+			single requirement. Nevertheless, this document speaks only of
+			<dfn>conforming specifications</dfn>
+			.
+		</p>
+
+		<p>Conforming specifications are ones that address one or more
+			requirements listed in this document. Conforming specifications
+			should attempt to address SHOULD level requirements requirements
+			unless there is a technically valid reason not to do so.</p>
+	</section>
+
+	<section>
+		<h2>Terminology</h2>
+
+		<dl>
+			<dt>
+				<dfn>Adaptive Bit Rate</dfn>
+			</dt>
+			<dd>Adaptive bit rate media is characterized by short
+				independent parallel media stream segments that can be individually
+				selected and rendered according to some selective criteria.
+				Typically, the parallel segments are differentiated by a feature
+				such as required bandwidth, image resolution, etc.</dd>
+
+			<dt>
+				<dfn>Common Time Base</dfn>
+			</dt>
+			<dd>A common time base is a time reference that can be
+				unambiguously interpreted for synchronization purposes.</dd>
+
+			<dt>
+				<dfn>Trick Play</dfn>
+			</dt>
+			<dd>Trick play refers to common media playback controls such as
+				play, stop, pause, rewind and fast forward.</dd>
+
+
+		</dl>
+	</section>
+
+	<section>
+		<h2>MPTF Requirements for Adaptive Bit Rate Streaming</h2>
+
+		<p>This section list the requirements that conforming
+			specification(s) would need to adopt in order to ensure a common
+			interface and interpretation for the playback and control of adaptive
+			bit rate media. These requirements are the result of an interactive
+			process of feedback and discussion within the Media Pipeline Task
+			Force of the Web and TV Interest Group</p>
+
+		<section>
+			<h3>General</h3>
+
+			<section>
+				<h4>Standards Compatibility</h4>
+				<h5>Compatibility with widely deployed standards</h5>
+				<p>One of the primary purposes for standardizing the way the
+					media elements use adaptive bitrate streaming is to enable
+					different existing and future adaptive bitrate streming methods to
+					work consistently with HTML5 media tags. Therefore, media tags must
+					work with the widely deployed adaptive bitrate methods that are
+					available now.</p>
+			</section>
+
+			<section>
+				<h4>Media Tags</h4>
+				<h5>The &lt;video&gt; and &lt;audio&gt; tags should be used to
+					specify video and audio in HTML.</h5>
+				<p>In the past, the &lt;obj&gt; tag has been used to add
+					non-standard functionality to HTML pages. In order to provide more
+					consistent functionality, the &lt;video&gt; and &lt;audio&gt;
+					elements were added to HTML. This allows for consistent handling of
+					streaming media between different browsers and encoded with
+					different codecs. In order to maintain this consistency, any ABR
+					solution must define how the video and audio elements can be used
+					for playback of adaptive delivery format media.</p>
+			</section>
+
+			<section>
+				<h4>Common Time Reference</h4>
+				<h5>A common time reference must be unambiguously defined for
+					combining tracks with different time references and for
+					"continuous" tracks. Overlapping track segments must also be
+					handled. (DASH may provide a reasonable model.)</h5>
+				<p>Frequently, it is necessary to synchronize serveral different
+					steaming content sources. For example, audio tracks must be
+					synchronized with streaming video or the experience of watching the
+					video becomes unpleasant. Synchronization is also important for
+					advertising, closed caption and other streaming media features.
+					Since different streaming media sources have different time
+					references, a strategy for synchronizing these different references
+					must be adopted.</p>
+			</section>
+
+			<section>
+				<h4>Splicing</h4>
+				<h5>It should be possible to seamlessly splice content with a
+					discontinuous timeline (such as advertising) into the presentation.</h5>
+				<p>In addition to a common time reference, mapping to that
+					common time reference must be seamless enough to enable continuous
+					playback from sources spliced relative to different time bases.</p>
+			</section>
+
+			<section>
+				<h4>Trick Play</h4>
+				<h5>Search and trick-play must be unambiguously defined in the
+					context of this common time reference (e.g. anchor point and
+					offset).</h5>
+				<p>A common time reference is also important in the context of
+					trick play. Pausing, advancing or rewinding media content must be
+					done accurately and within a common reference. This is necessary in
+					order to advance or rewind to exact locations or the adjust the
+					playback lockation by precise increments.</p>
+			</section>
+
+			<section>
+				<h4>Playability</h4>
+				<h5>The ability of the user agent to play a piece of content
+					must be determined quickly and with reasonable accuracy (e.g. using
+					CanPlayType(codec, level, profile) or other means)</h5>
+				<p>With media content available from sources around the world,
+					it is important to quickly determine whether various content
+					sources can be rendered. Therefore this determinitaion must be
+					madew with a minimum of overhead.</p>
+			</section>
+
+			<section>
+				<h4>No ABR Method Preference</h4>
+				<h5>The standard interface to support adaptive bit rate
+					streaming must not advantage one specific ABR method over another.</h5>
+				<p>HTML aspires to be a level playing field. This philosophy
+					enables innovation to flourish and allows superior solutions to
+					become quickly implemnted and adopted. ABR media systems are and
+					should continue to be innovative solutions within this spirit of
+					openness. Support for different ABR systems should not require any
+					proprietary modification of the user agent</p>
+			</section>
+
+			<section>
+				<h4>Open Source Browsers</h4>
+				<h5>The standard interface to support adaptive bit rate
+					streaming must work with "open source" browsers.</h5>
+				<p>The ability for a browser vendor to implement playback of ABR
+					media in accordance with the requirements in this document must be
+					supported.</p>
+			</section>
+
+			<section>
+				<h4>Common Parameters</h4>
+				<h5>Any parameters required for use of the ABR system must be
+					identified and specifiable.</h5>
+				<p>While specific implementations may include vendor-specific
+					parameters for special features, the parameters required for basic
+					playback should be publicly specified.</p>
+			</section>
+
+			<section>
+				<h4>Common Errors</h4>
+				<h5>Specific errors relevant to ABR media must be identified
+					and reportable.</h5>
+				<p>While specific implementations may include vendor-specific
+					error codes, the error codes required for basic operation and
+					diagnosis should be publicly specified. However, the particular ABR
+					systems to be supported is an implementation decision.</p>
+			</section>
+
+			<section>
+				<h4>(Others)</h4>
+			</section>
+		</section>
+
+	</section>
+
+	<section>
+		<h2>Use Cases</h2>
+
+		<p>This section is a non-exhaustive list of use cases that would
+			be enabled by one (or more) specifications implementing the
+			requirements listed above. Each use case is written according to the
+			following template:</p>
+
+		<dl>
+			<dt>Ux. &lt;TITLE&gt;</dt>
+			<dd>Use case title</dd>
+
+			<dt>Description</dt>
+			<dd>
+				<ul>
+					<li>High level description/overview of the goals of the use
+						case</li>
+					<li>Schematic illustration (devices involved, work flows,
+						etc.) (Optional)</li>
+				</ul>
+			</dd>
+
+			<dt>Motivation</dt>
+			<dd>
+				<ul>
+					<li>Explanation of the benefit to the ecosystem</li>
+					<li>Why existing standards cannot be used to accomplish this
+						use case</li>
+				</ul>
+			</dd>
+
+			<dt>Dependencies</dt>
+			<dd>Other use cases, proposals or other ongoing standardization
+				activities which this use case is dependent on or related to.</dd>
+
+			<dt>Requirements</dt>
+			<dd>List of requirements implied by this Use Case.</dd>
+		</dl>
+
+		<section>
+			<h3>U1. Play Adaptive Bit Rate Content</h3>
+
+			<dl>
+				<dt>Description</dt>
+				<dd>
+					<p>A user can play adaptive bit rate content identified in
+						media tags regardless of the particular adaptive bit rate method
+						used to format the content. Support for the playable content
+						formats must be provided by the browser or extensible features of
+						the browser.</p>
+
+					<p>Possible implementation:</p>
+					<ul>
+						<li>The user selects a content item for playback.</li>
+						<li>The content plays.</li>
+					</ul>
+				</dd>
+
+				<dt>Motivation</dt>
+				<dd>
+					<p>There is no standard interface for adaptive bit rate content
+						content. This leads to the implementation of multiple incompatible
+						playback systems and interfaces. What should be standardized is:</p>
+					<ul>
+						<li>an interface to specify the playback of adaptive bit rate
+							content.</li>
+					</ul>
+				</dd>
+
+				<dt>Dependencies</dt>
+				<dd>
+					<p>In order to play adaptive bit rate content, the application
+						interface must be provided.</p>
+				</dd>
+
+				<dt>Requirements</dt>
+				<dd>
+					<table>
+						<tr>
+							<th>Low Level</th>
+							<th>High Level</th>
+						</tr>
+						<tr>
+							<td>Compatibility with existing standards</td>
+							<td><a href="#standards-compatibility" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Support for media tags</td>
+							<td><a href="#media-tags" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Support for a common time reference</td>
+							<td><a href="#common-time-reference" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Support for particular ABR media type</td>
+							<td><a href="#playability" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Specify the ABR parameters</td>
+							<td><a href="#common-parameters" class="sectionRef"></a></td>
+						</tr>
+					</table>
+				</dd>
+			</dl>
+		</section>
+
+		<section>
+			<h3>U2. Trick Mode with Adaptive Bit Rate Content</h3>
+
+			<dl>
+				<dt>Description</dt>
+				<dd>
+					<p>A user can use trick-play modes (pause, rewind,
+						fast-forward) with adaptive bit rate content regardless of the
+						particular adaptive bit rate method used to format the content.</p>
+
+					<p>Possible implementation:</p>
+					<ul>
+						<li>The user selects a content item for playback.</li>
+						<li>The user clicks a trick-play button (pause, rewind,
+							fast-forward) in the user interface.</li>
+						<li>The playback of the content is changed according to the
+							trick-play feature selected.</li>
+					</ul>
+				</dd>
+
+				<dt>Motivation</dt>
+				<dd>
+					<p>Playback of media should be consistent regardless of the
+						particular format of the content. Trick-play modes available to
+						non-adaptive media formats should also be available to adaptive
+						bit rate media. What should be standardized is:</p>
+					<ul>
+						<li>trick-play modes should work consistently across all
+							streaming media formats.</li>
+					</ul>
+				</dd>
+
+				<dt>Dependencies</dt>
+				<dd>
+					<p>None.</p>
+				</dd>
+
+				<dt>Requirements</dt>
+				<dd>
+					<table>
+						<tr>
+							<th>Low Level</th>
+							<th>High Level</th>
+						</tr>
+						<tr>
+							<td>Compatibility with existing standards</td>
+							<td><a href="#standards-compatibility" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Support for media tags</td>
+							<td><a href="#media-tags" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Support for a common time reference</td>
+							<td><a href="#common-time-reference" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Support for trick-play modes</td>
+							<td><a href="#trick-play" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Specify the ABR parameters</td>
+							<td><a href="#common-parameters" class="sectionRef"></a></td>
+						</tr>
+					</table>
+				</dd>
+			</dl>
+		</section>
+
+		<section>
+			<h3>U3. Search Adaptive Bit Rate Content</h3>
+
+			<dl>
+				<dt>Description</dt>
+				<dd>
+					<p>A user can search adaptive bit rate content identified in
+						media tags to position playback at a specific point in time
+						regardless of the particular adaptive bit rate method used to
+						format the content.</p>
+
+					<p>Possible implementation:</p>
+					<ul>
+						<li>The user selects a content item for playback.</li>
+						<li>The user selects a particular point in time in the
+							playback of the video (e.g. 30 seconds ahead, 75% through the
+							video, etc.).</li>
+						<li>The playback pointer is positioned at the specified
+							location in time.</li>
+						<li>The content plays beginning at the new position.</li>
+					</ul>
+				</dd>
+
+				<dt>Motivation</dt>
+				<dd>
+					<p>Playback of media should be consistent regardless of the
+						particular format of the content. Search modes available to
+						non-adaptive media formats should also be available to adaptive
+						bit rate media. What should be standardized is:</p>
+					<ul>
+						<li>an interface to specify searching of adaptive bit rate
+							content.</li>
+					</ul>
+				</dd>
+
+				<dt>Dependencies</dt>
+				<dd>
+					<p>None.</p>
+				</dd>
+
+				<dt>Requirements</dt>
+				<dd>
+					<table>
+						<tr>
+							<th>Low Level</th>
+							<th>High Level</th>
+						</tr>
+						<tr>
+							<td>Compatibility with existing standards</td>
+							<td><a href="#standards-compatibility" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Support for media tags</td>
+							<td><a href="#media-tags" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Support for a common time reference</td>
+							<td><a href="#common-time-reference" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Support for particular ABR media type</td>
+							<td><a href="#playability" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Specify the ABR parameters</td>
+							<td><a href="#common-parameters" class="sectionRef"></a></td>
+						</tr>
+					</table>
+				</dd>
+			</dl>
+		</section>
+
+		<section>
+			<h3>U4. Merge, Splice and Append Adaptive Bit Rate Content</h3>
+
+			<dl>
+				<dt>Description</dt>
+				<dd>
+					<p>A user merge, splice and append adaptive bit rate content
+						identified in media tags regardless of the particular adaptive bit
+						rate method used to format the content.</p>
+
+					<p>Possible implementation:</p>
+					<ul>
+						<li>The user selects two content items and identifies a
+							location in time where they are to be merged (both items continue
+							playing at the merge point), spliced (one item stops playing and
+							the other item continues) or appended (one item plays to its end,
+							then the other item plays from its beginning).</li>
+						<li>The content plays as specified.</li>
+					</ul>
+				</dd>
+
+				<dt>Motivation</dt>
+				<dd>
+					<p>There is no standard interface for merging, splicing
+						content. Content can typically be appended by queueing up the next
+						segment, but there is no guarantee that the common time reference
+						will be preserved. What should be standardized is:</p>
+					<ul>
+						<li>an interface to specify the means to merge, splice and
+							append adaptive bit rate content;</li>
+						<li>a specification on how to preserve a common time base
+							when merging, splicing or appending adaptive bit rate content.</li>
+					</ul>
+				</dd>
+
+				<dt>Dependencies</dt>
+				<dd>
+					<p>None.</p>
+				</dd>
+
+				<dt>Requirements</dt>
+				<dd>
+					<table>
+						<tr>
+							<th>Low Level</th>
+							<th>High Level</th>
+						</tr>
+						<tr>
+							<td>Compatibility with existing standards</td>
+							<td><a href="#standards-compatibility" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Support for media tags</td>
+							<td><a href="#media-tags" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Support for a common time reference</td>
+							<td><a href="#common-time-reference" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Support for particular ABR media type</td>
+							<td><a href="#playability" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Specify the ABR parameters</td>
+							<td><a href="#common-parameters" class="sectionRef"></a></td>
+						</tr>
+					</table>
+				</dd>
+			</dl>
+		</section>
+
+		<section>
+			<h3>U5. Continuous Adaptive Bit Rate Content</h3>
+
+			<dl>
+				<dt>Description</dt>
+				<dd>
+					<p>A user can play a continuous stream of adaptive bit rate
+						content identified in media tags regardless of the particular
+						adaptive bit rate method used to format the content. Continuous
+						content could be a stream that is continuously encoded from a live
+						source (e.g. it has no specific finite length) or a play list that
+						is continually getting content appended and has a common time
+						base.</p>
+
+					<p>Possible implementation:</p>
+					<ul>
+						<li>The user selects a "channel" for playback.</li>
+						<li>The channel plays continuously until the user selects a
+							different source.</li>
+					</ul>
+				</dd>
+
+				<dt>Motivation</dt>
+				<dd>
+					<p>There is no standard interface for continuous playback
+						adaptive bit rate content. What should be standardized is:</p>
+					<ul>
+						<li>an interface to specify the playback of continuous
+							adaptive bit rate content;</li>
+						<li>a specification for maintaining a common time base for
+							continuous content.</li>
+					</ul>
+				</dd>
+
+				<dt>Dependencies</dt>
+				<dd>
+					<p>None.</p>
+				</dd>
+
+				<dt>Requirements</dt>
+				<dd>
+					<table>
+						<tr>
+							<th>Low Level</th>
+							<th>High Level</th>
+						</tr>
+						<tr>
+							<td>Compatibility with existing standards</td>
+							<td><a href="#standards-compatibility" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Support for media tags</td>
+							<td><a href="#media-tags" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Support for a common time reference</td>
+							<td><a href="#common-time-reference" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Support for particular ABR media type</td>
+							<td><a href="#playability" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Specify the ABR parameters</td>
+							<td><a href="#common-parameters" class="sectionRef"></a></td>
+						</tr>
+					</table>
+				</dd>
+			</dl>
+		</section>
+
+		<section>
+			<h3>U6. Timed Tracks and Adaptive Bit Rate Content</h3>
+
+			<dl>
+				<dt>Description</dt>
+				<dd>
+					<p>A user can add timed tracks adaptive bit rate content at
+						specific points in time regardless of the particular adaptive bit
+						rate method used to format the content.</p>
+
+					<p>Possible implementation:</p>
+					<ul>
+						<li>The user selects a content item, timed text track to be
+							merged and a specific location in time.</li>
+						<li>The content item and timed text track are merged as
+							specified.</li>
+						<li>The merged content plays.</li>
+					</ul>
+				</dd>
+
+				<dt>Motivation</dt>
+				<dd>
+					<p>There is no standard interface for merging timed text tracks
+						with adaptive bit rate content. What should be standardized is:</p>
+					<ul>
+						<li>an interface to specify the merging of timed text tracks
+							with adaptive bit rate content.</li>
+					</ul>
+				</dd>
+
+				<dt>Dependencies</dt>
+				<dd>
+					<p>None.</p>
+				</dd>
+
+				<dt>Requirements</dt>
+				<dd>
+					<table>
+						<tr>
+							<th>Low Level</th>
+							<th>High Level</th>
+						</tr>
+						<tr>
+							<td>Compatibility with existing standards</td>
+							<td><a href="#standards-compatibility" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Support for media tags</td>
+							<td><a href="#media-tags" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Support for a common time reference</td>
+							<td><a href="#common-time-reference" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Support for particular ABR media type</td>
+							<td><a href="#playability" class="sectionRef"></a></td>
+						</tr>
+						<tr>
+							<td>Specify the ABR parameters</td>
+							<td><a href="#common-parameters" class="sectionRef"></a></td>
+						</tr>
+					</table>
+				</dd>
+			</dl>
+		</section>
+
+	</section>
+	<h3>Other Issues or Use Cases</h3>
+	<h2>Byte Range, Events, Events at start of request</h2>
+	<h2>(Others?)</h2>
+	<section></section>
+
+
+	<section>
+		<h2>Security</h2>
+
+		<p>In the context of adaptive bit rate media, security is
+			primarily concerned with ensuring that authorized users are able to
+			play the media and unauthorized users are not. This may involve
+			verifying that the content has been legally obtained. It may also
+			mean that personally produced video is only viewable by friends and
+			family. If viewing is intended to be restricted, a content protection
+			system must be in place. Adaptive bit rate video should be treated
+			the same as any video element in this regard. A content protection
+			system for media elements has been proposed to the W3C HTML WG and is
+			being reviewed. (Put reference here)</p>
+	</section>
+
+	<section>
+		<h2>Next Steps</h2>
+
+		<ul>
+			<li>Make any necessary changes or refinements in this document</li>
+			<li>Submit this document to the appropriate W3C WC (likely HTML)
+				for development of specification.</li>
+		</ul>
+	</section>
+
+	<section>
+		<h2>Proposals</h2>
+
+		<section>
+			<h3>
+				<a href="http://www.w3.org/2011/webtv/wiki/MPTF/HTML_adaptive_calls">Adaptive
+					Bitrate calls for HTML5 &lt;video&gt; tag (WIP) (Duncan Rowden)</a>
+			</h3>
+
+			<p>This proposal refers to work done in WHATWG regarding three
+				implementation methods and their associated APIs.</p>
+		</section>
+
+		<section>
+			<h3>
+				<a
+					href="http://dvcs.w3.org/hg/html-media/raw-file/tip/media-source/media-source.html">Mediasource
+					specification (Aaron Colwell, Kilroy Hughes, Mark Watson)</a>
+			</h3>
+
+			<p>This proposal was jointly developed by Microsoft, Google and
+				Netflix. It is comprehensive and is intended to meet the
+				requirements described in this document.</p>
+		</section>
+	</section>
+
+	<section class='appendix'>
+		<h2>Acknowledgements</h2>
+		<p>Many thanks to the members of the Media Pipeline Task Force of
+			the W3C Web & TV Interest Group who collaborated to create this
+			requirements document and reviewed the proposals to be submitted to
+			the HTML WG for inclusion in the HTML specification.</p>
+	</section>
+</body>
+</html>
