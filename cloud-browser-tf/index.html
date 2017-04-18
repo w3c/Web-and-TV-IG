@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cloud Browser Architecture</title>
+    <meta charset='utf-8'>
+    <script src='https://www.w3.org/Tools/respec/respec-w3c-common' async class='remove'></script>
+    <script class='remove'>
+      var respecConfig = {
+          specStatus:         "IG-NOTE",
+          shortName:          "cloud-browser",
+          editors:  [
+              {
+                  name:       "Colin Meerveld",
+                  mailto:     "c.meerveld@activevideo.com",
+                  company:    "Activevideo",
+                  companyURL: "http://www.activevideo.com/"
+              },
+              {
+                  name:       "Alexandra Mikityuk", 
+                  mailto:     "Alexandra.Mikityuk@telekom.de",
+                  company:    "Deutsche Telekom",
+                  companyURL: "http://www.telekom.com"
+              }
+          ],
+          wg:                 "Cloud Browser Task Force",
+          wgURI:              "https://btotr.github.io/cloud-browser-tf/"
+      };
+    </script>
+  </head>
+  <body>
+    <section id='abstract'>
+      <p>
+          A Cloud Browser is a browser running and executing on a server. This document describes the concepts and architecture for the Cloud Browser. The main purpose is to provide the building blocks for a Cloud Browser solution.
+      </p>
+    </section>
+    
+    <section id='sotd'>
+      <p>
+          This is a Interest Group Note that the Cloud Browser Task Force is discussing and exploring. It has no official standing of any kind and does not represent the support or consensus of any standards organisation or contributor. This is a subset of the W3C Public Web & TV Interest Group - Cloud Browser Task Force. As the Cloud Browser TF progresses its work, this section will be used to identify the architecture that has reached rough consensus within the group.
+      </p>
+    </section>
+    
+    <section class="introductory">
+      <h2>Introduction</h2>
+      <p>
+          Today's browsers need a vast amount of hardware resources to process modern web sites or are simply unable to support modern web technologies such as HTML5. The Cloud Browser concept addresses these issues by putting the browser into a more powerful, easier and manageable server or Cloud. The service execution is shifted to the Cloud, where the user interface is rendered and streamed down as a media stream to the client. The main functionality of the client is decoding and presenting the media stream to the end user. Using this design, it is possible to provide a uniform user interface for a large range of devices. Furthermore, this concept reduces the need for processing power of the client and helps in deploying new browser technologies faster.
+      </p>
+    </section>
+    
+    <section>
+      <h2>Terminology</h2>
+      <dt>Cloud Browser Client</dt>
+      <dd>Program which communicates with the orchestration.</dd>
+      <dt>Client Device</dt>
+      <dd>Actual hardware which is running the cloud browser client.</dd>
+      <dt>Cloud Browser</dt>
+      <dd>User agent terminated in the orchestration.</dd>
+      <dt>Orchestration</dt>
+      <dd>Server which abstracts functionality and manages sessions for the cloud browser.</dd>
+      <dt>Media Server</dt>
+      <dd>A generalised term for an infrastructure which provide various media streams such as VoD, linear broadcast and even a local pvr.</dd>
+      <dt>Graphics Library</dt>
+      <dd>A library responsible for rendering graphics to the end-user.</dd>
+      <dt>Out-of-band media</dt>
+      <dd>Media that is delivered to the Cloud Browser Client from Media Server directly.</dd>
+      <dt>Web Application</dt>
+      <dd>A software program running in a web browser.</dd>
+      <dt>Cloud Browser Server</dt>
+      <dd>The server where the Cloud Browser is hosted and executed.</dd>
+      <dt>Transformation Proxy</dt>
+      <dd>Transformation proxies alter requests sent by user agents to servers and responses returned by servers so that the appearance, structure or control flow of Web applications are modified.</dd>
+    </section>
+
+    <section class="informative">
+      <h2>Architecture</h2>
+      <p>
+          The following section provides an overview of the main building blocks of the Cloud Browser solution. The goal is to have a consistent architecture between Cloud Browser vendors that doesn't limit the inovation of specific implementations.
+      </p>
+      <section>
+        <h4>Client Device</h4>
+        <p>
+            A Client Device is the actual hardware where the User Interface is presented. There are no requirements to the Client Device other than that it should have a Cloud Browser Client. A Client Device could be anything from a Set-Top-Box to a SmartTV or even a mobile phone</p>
+      </section>
+      <section>
+        <h4>Cloud Browser Client</h4>
+        <p>
+            In a Cloud Browser architecture the execution is done on a server and the result is sent down to a so-called Cloud Browser Client. This Cloud Browser Client is only responsible for displaying the stream and providing essential information such as key strokes. The latter is depending on the infrastructure. In the future there may be a specification how to exchange this information for example with json-dl based on a generic communication mechanisms such as websockets or webRTC. It will be transport and format agnostic. In other words, it will be vendor specific or may be standardised outside W3C. Furthermore, the Cloud Browser Client doesn't have any context. Namely, it will connect to the orchestration and display the result. This will make sure that all the logic is within the cloud and no necessary updates are needed on the client device. This is also a fundamental difference with a Transformation Proxy, where the context still exists on the client device. An easy way to visualise the Cloud Browser Client is to see it as a remote display which also acts as gateway to send essential information to the Cloud Browser.</p>
+      </section>  
+      <section>
+        <h4>Cloud Browser</h4>
+        <p>
+         The Cloud Browser itself is a user agent terminated in the orchestration and will act as any other conventional browser.
+        </p>
+      </section>  
+      <section>
+        <h4>Orchestration</h4>
+        <p>
+          The Cloud Browser lives in a so-called orchestration that is mainly responsible for session management and abstraction. It is also responsible for how the stream will be sent to the Cloud Browser Client as this is depending on the underlaying infrastructure. There are two main approaches, a Single Stream and a Double Stream approach that are described below.
+        </p>
+      </section>
+    </section>      
+    
+    <section>
+      <h5 id="single-stream">Single Stream</h5>  
+      <p>
+          In the Single Stream approach, the orchestration provides both the user interface and the media streams. The Cloud Browser Client does not process any other media data from other media sources. The only data the orchestration receives are triggers such as key strokes originated from the remote control of the Client Device. However, it is important to mention that the triggers are not restricted to input. it could be any data that is sent by any Client Device (e.g. capabilities).
+      </p>
+      <figure>
+        <img src="https://www.w3.org/2011/webtv/wiki/images/0/0c/Ss-cp-highlevel.png" alt="">
+        <figcaption>Architecture single stream</figcaption>
+      </figure>
+      <p>
+        The approach executes the Web Application in the Cloud Browser and delivers the user interface to the Cloud Browser Client. A typical use case: The user starts the Client Device which triggers a signal via the Cloud Browser Client which starts a Web Application. The Cloud Browser requests the Web Application. After the resources of the Web Application are downloaded, they are parsed and interpreted by the Cloud Browser. These resources include HTML, CSS and JavaScript. The JavaScript is processed and executed by the JavaScript engine of the Cloud Browser. After the layout is done, the painting commands of the User Interface are sent to the Graphics Library. The Graphics Library is part of the Orchestration and resides on the Cloud Browser Server.
+      </p>
+      <p>        
+        In case the Web Application requests a media stream from a Media Server. The Graphics Library will blend the media stream togheter with the User Interface. The output is encoded using the required video codec supported by the Client Device and sent as a single media stream to the Cloud Browser Client via the Orchestration. The Cloud Browser Client receives the media stream. The stream is decoded and presented to the display of the Client Device.
+      </p>
+    </section>
+ 
+    <section>  
+      <h5 id="double-stream">Double Stream</h5>  
+      <p>
+          With regards to the Double Stream approach of a Cloud Browser, the Cloud Browser renders the User Interface only, while the media is delivered from an Media Server. Thus, the User Interface and media streams are delivered separately to the Client Device, which then has to combine both of these streams and present them to the end-user in a unified form. This approach therefore leverages the video delivery infrastructures such as multicast networks.</p>
+      <figure>
+        <img src="https://www.w3.org/2011/webtv/wiki/images/e/e3/Ds-lp-highlevel.png" alt="">
+        <figcaption>Architecture double stream</figcaption>
+      </figure>
+    </section>
+    <section>
+      <p>
+        This approach executes the Web Application and delivers the data to the Cloud Browser Client as the single stream approach does. However a media stream is not blended with the user interface but delivered Out Of Band from a Media Server. Blending is done on the Cloud Browser Client. Therefore the user interface is usually provided as a sequence of images which a Client Device could process within its own Graphic Library.</p>
+    </section>
+     <section>
+      <h3>Acknowledgments</h3>
+      <p>
+        Special thanks to Oliver Friedrich, Nilo Mitra, Kaz Ashimura and Steve Morris for there contributions to this document.
+      </p>
+    </section>
+  </body>
+</html>
