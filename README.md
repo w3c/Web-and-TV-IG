@@ -2,7 +2,7 @@
 
 **Note:** Since [rechartering in 2017](https://www.w3.org/2017/03/webtv-charter.html), this group was renamed as the
 Media & Entertainment Interest Group, and this repository is no longer active. Please refer to the
-[Media & Entertainment Interest Group's GitHub repository](https://github.com/w3c/media-entertainment)
+[Media & Entertainment Interest Group's GitHub repository](https://github.com/w3c/media-and-entertainment)
 for current work in the group.
 
 This is the Github repository of the former W3C Web and TV Interest Group (Web&TV IG) used to organize work in the IG.
